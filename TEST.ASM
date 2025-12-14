@@ -37,13 +37,23 @@ Main:
     setcursor 31, 45
     lea dx, back
     call print
-    mov user_display_props[2], 3
+    mov user_display_props[2], 0
+    
+    xor bx, bx
+    mov bl, loan_count_idx
+    cmp loan_counts[bx], 0
+    je NoLoansExist
+    jne HomeChoice
+    NoLoansExist:
+        mov focus, 1
+        call PaintAdd
     HomeChoice:
         cmp screen_number[0], 3
         jne HomeReturn
         mov loan_display_props[1], 25
         mov loan_display_props[0], 25
         call SelectUserLoans
+
         call DisplayLoans
         xor ax, ax
         call WaitArrowKey
@@ -71,6 +81,7 @@ Main:
         call PaintNone
         jmp HomeChoice
     HomeCallRight:
+        mov focus, 1
         call HomeRight
         jmp HomeChoice
     HomeEnterPressed:
@@ -104,58 +115,58 @@ SelectUserLoans proc
     mov current_loans_ptr, ax
 
     ; select loan count
-    mov ax, loan_counts[bx]
-    mov bx, ax
-    mov ax, [bx]
-    mov current_loan_count, ax
+    xor ax, ax
+    mov al, user_display_props[2]
+    mov loan_count_idx, al
 
     xor ax, ax
     xor bx, bx
     ret
 SelectUserLoans endp
+DisplayLoan proc
+    mov ax, TYPE Loan
+    mul si
+    mov di, current_loans_ptr
+    add di, ax
+    lea dx, [di+1]
+    call print
+    ret
+DisplayLoan endp
 HomeAdd proc
     mov string_buffer[0], 36
     mov string_buffer[1], 0
     mov string_buffer[2], 40
     mov string_buffer[3], 20
     call CenteredStringScan
-   
-    ; --- compute pointer to current user's loan table ---
-    xor ax, ax
-    mov al, user_display_props[2]  ; user index
-    shl ax, 1                      ; WORD offset
-    mov bx, ax
-    mov ax, loan_tables[bx]        ; AX = OFFSET loanN
-
-    ; --- compute DI for new loan entry ---
-    mov bx, ax                      ; BX = OFFSET loansN
-    mov di, bx
-    mov ax, current_loan_count       ; AX = current loan count
-    mov cx, TYPE Loan                ; size of one Loan
-    mul cx                           ; AX = AX * sizeof(Loan)
-    add di, ax                       ; DI = address of new Loan
-
-    ; --- increment the loan count for this user ---
+    mov si, OFFSET string_buffer + 4
+    ; --- get base of loan table ---
     xor bx, bx
-    mov bl, user_display_props[2]    ; user index
-    shl bx, 1                        ; WORD offset
-    
-    mov si, loan_counts[bx]          ; BX = OFFSET loan_countN
-    inc word ptr [bx]                 ; increment loan_countN
-    
-    mov ax, [si]
-    mov current_loan_count, ax
+    mov bl, loan_count_idx      ; index into loan_tables
+    mov di, current_loans_ptr                  ; DI = base address of current loan table
 
-
+    ; --- compute offset for next loan ---
+    xor bx, bx
+    mov bl, loan_count_idx
+    mov al, loan_counts[bx] ; number of existing loans
+    mov ah, 0
+    mov cl, TYPE Loan
+    mul cl                        ; AX = offset in bytes to next loan
+    add di, ax                    ; DI = address of next loan
+    add di, 1                     ; skip ID field (optional)
+    
     ; --- setup ES ---
     mov ax, ds
     mov es, ax
     call CopyString
 
-    setcursor 0, 0
-    bg 0fh, 15
-    mov si, current_loan_count
-    call DisplayLoan
+; increase loan_count
+    xor bx, bx
+    mov bl, loan_count_idx
+    inc loan_counts[bx]
+    setcursor 20, 32
+    bg 00h, 16
+
+    
 
     ret
 HomeAdd endp
@@ -181,6 +192,7 @@ HomeRight proc
     HomeRightCallPaintBack:
         call PaintBack
         jmp HomeRightDone
+
     HomeRightDone:
     ret
 HomeRight endp
@@ -193,7 +205,9 @@ HomeDown proc
         jmp HomeDownDone
     HomeLoansDown:
         xor ax, ax
-        mov ax, current_loan_count
+        xor bx, bx
+        mov bl, loan_count_idx
+        mov al, loan_counts[bx]
         dec al
         cmp loan_display_props[2], al
         je HomeDownDone
@@ -216,10 +230,6 @@ HomeUp proc
         ret
 HomeUp endp
 HomeOptionsDown proc
-    xor ax, ax
-    mov ax, current_loan_count
-    cmp selected_option, ax 
-    je HomeOptionsUpDone  ; skip if limit
     cmp selected_option, 3
     je HomeOptionsDownDone
     inc selected_option
@@ -280,7 +290,11 @@ DisplayLoans proc
     xor si, si
     xor di, di
     DisplayLoansLoop:
-        cmp si, current_loan_count
+        xor ax, ax
+        xor bx, bx
+        mov bl, loan_count_idx
+        mov al, loan_counts[bx]
+        cmp si, ax
         jae DisplayLoansDone
         setcursor loan_display_props[0], loan_display_props[1]
         xor ax, ax
@@ -301,15 +315,6 @@ DisplayLoans proc
     DisplayLoansDone:
         ret
 DisplayLoans endp
-DisplayLoan proc
-    mov ax, TYPE Loan
-    mul si
-    mov di, current_loans_ptr
-    add di, ax
-    lea dx, [di+1]
-    call print
-    ret
-DisplayLoan endp
 PaintNone proc
     setcursor 25, 45
     bg 0fh, 6

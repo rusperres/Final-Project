@@ -47,8 +47,9 @@ loan_display_props db 0, 0, 0
 ; 1 - column
 ; 2 - selected
 ; 3 - back - selected
+loan_counts db 0, 10, 10, 8, 10, 10, 10, 10, 10
+loan_count_idx db 0
 loans1 Loan 10 dup(<>)
-loan_count1 dw 0
 
 loans2 Loan \
     <0, "11000$">, \
@@ -61,7 +62,6 @@ loans2 Loan \
     <7, "9800$">,  \
     <8, "43000$">, \
     <9, "6500$">
-loan_count2 dw 10
 
 
 loans3 Loan \
@@ -75,7 +75,6 @@ loans3 Loan \
     <7, "9200$">,  \
     <8, "40000$">, \
     <9, "5800$">
-loan_count3 dw 10
 
 
 loans4 Loan \
@@ -88,7 +87,6 @@ loans4 Loan \
     <6, "20000$">, \
     <7, "10000$">, \
     2 dup(<>)
-loan_count4 dw 8
 
 
 
@@ -103,7 +101,6 @@ loans5 Loan \
     <7, "9600$">,  \
     <8, "42500$">, \
     <9, "6200$">
-loan_count5 dw 10
 
 
 loans6 Loan \
@@ -117,7 +114,6 @@ loans6 Loan \
     <7, "9000$">,  \
     <8, "39500$">, \
     <9, "5600$">
-loan_count6 dw 10
 
 
 loans7 Loan \
@@ -131,7 +127,6 @@ loans7 Loan \
     <7, "11000$">, \
     <8, "47000$">, \
     <9, "7500$">
-loan_count7 dw 10
 
 
 loans8 Loan \
@@ -145,7 +140,6 @@ loans8 Loan \
     <7, "9400$">,  \
     <8, "41000$">, \
     <9, "5900$">
-loan_count8 dw 10
 
 
 loans9 Loan \
@@ -159,7 +153,6 @@ loans9 Loan \
     <7, "12000$">, \
     <8, "49000$">, \
     <9, "8000$">
-loan_count9 dw 10
 
 
 loans10 Loan \
@@ -173,17 +166,11 @@ loans10 Loan \
     <7, "10200$">, \
     <8, "44000$">, \
     <9, "6800$">
-loan_count10 dw 10
 
 ; pointers to loan tables
 loan_tables dw OFFSET loans1, OFFSET loans2, OFFSET loans3, OFFSET loans4, \
                OFFSET loans5, OFFSET loans6, OFFSET loans7, OFFSET loans8, \
                OFFSET loans9, OFFSET loans10
 
-; pointers to loan counts
-loan_counts dw OFFSET loan_count1, OFFSET loan_count2, OFFSET loan_count3, OFFSET loan_count4, \
-               OFFSET loan_count5, OFFSET loan_count6, OFFSET loan_count7, OFFSET loan_count8, \
-               OFFSET loan_count9, OFFSET loan_count10
 current_loans_ptr  dw ?
-current_loan_count dw ?
 
