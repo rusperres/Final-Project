@@ -1,4 +1,5 @@
 Auth proc
+    call AuthResetAll
     setcursor 0, 0
     bg 0Fh, 10000
     setcursor 15, 0
@@ -39,6 +40,7 @@ Auth proc
     setcursor 50, 79
     jmp @@Choice
 @@EnterPressed:
+
     setcursor 0, 0
     call AuthOnClick
     ret
@@ -87,6 +89,7 @@ AuthOnClick proc
     mov login_button[1], 7fh
     call SetAuthState
     delay 200
+    mov screen_number[0], 2
     jmp @@EndClick
     @@EnterRegister:
         mov register_button[1], 4fh
@@ -107,6 +110,26 @@ RegisterOnClick proc
     lea dx, register_prompt 
     call print 
     mov string_buffer[3], 40
-    call CenteredStringScan
+    call CenteredStringScan 
+    cmp register_button[0], 1
+    mov si, OFFSET string_buffer + 4
+    mov ax, TYPE User
+    mov bx, user_count
+    mul bx
+    lea di, users
+    add di, ax
+    add di, 1
+    mov ax, ds
+    mov es, ax
+    call CopyString
+    inc user_count
     ret
 RegisterOnClick endp
+AuthResetAll proc
+    mov login_button[0], 1
+    mov login_button[1], 7fh
+    mov register_button[0],0
+    mov register_button[1], 0fh
+    call ClearStringBuffer
+    ret
+AuthResetAll endp

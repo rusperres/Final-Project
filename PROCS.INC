@@ -11,6 +11,20 @@ set_font macro font
     int 10h           
 endm
 
+setcursor MACRO row, col
+    mov ah, 02h
+    mov dh, row
+    mov dl, col
+    int 10h
+ENDM
+bg MACRO attr, count
+    mov ah, 09h
+    mov al, ' '
+    mov bl, attr
+    mov cx, count
+    int 10h
+ENDM
+
 
 print proc
     mov ah, 09h
@@ -100,4 +114,92 @@ Center proc
     add cl, string_buffer[1] 
     setcursor string_buffer[3], cl 
     ret
-endp
+Center endp
+
+
+; =============================
+;   Copies from string_buffer si to another target buffer di
+; sample usage:
+;   mov si, OFFSET string_buffer + 4  ; point to input string
+;   mov ax, TYPE User
+;   mov bx, user_count                          ; user index = 0
+;   mul bx                             ; AX = offset
+;   lea di, users
+;   add di, ax
+;   add di, 1
+;   mov ax, ds
+;   mov es, ax
+;   call CopyString                    ; copy string into users[0].username
+;   inc user_count
+
+CopyString proc
+    CopyLoop:
+        lodsb
+        stosb
+        cmp al, '$'
+        jne CopyLoop
+    ret
+CopyString endp
+ReadString proc
+    xor si, si
+    mov si, 4
+    ReadStringLoop:
+        call RePrint
+        mov ah, 01h
+        int 21h
+        cmp al, 0dh ; check if enter
+        je ReadStringLoopDone
+        cmp al, 08h ; check if delete
+        jne ReadStringNoDelete
+        cmp si, 4
+        je ReadStringLoop   ; will not delete if si is 4
+        mov string_buffer[si-1], '$' ; delete
+        dec si
+        dec string_buffer[1]
+        call RePrint
+        jmp ReadStringLoop
+        ReadStringNoDelete:
+            cmp si, 17
+            je ReadStringLoop
+            cmp al, 126 ; ascii upper bound
+            ja ReadStringLoop
+            cmp al, 32  ; ascii lower bound
+            jb ReadStringLoop
+            mov string_buffer[si], al
+            mov string_buffer[si+1], '$'
+            inc si
+            inc string_buffer[1]
+            jmp ReadStringLoop
+            ReadStringLoopDone:
+                mov string_buffer[si], '$'
+                ret
+ReadString endp
+RePrint proc
+    setcursor string_buffer[3], string_buffer[0]
+    bg 00h, 15
+    setcursor string_buffer[3], string_buffer[0]
+    bg 0fh, 15
+  
+    lea dx, string_buffer[4]
+    call print
+    mov cl, string_buffer[0]
+    add cl, string_buffer[1]
+    setcursor string_buffer[3], cl
+    ret
+RePrint endp
+ClearStringBuffer proc
+    mov cx, 15
+    xor si, si
+    mov si, 4
+    mov string_buffer[0], 0
+    mov string_buffer[1], 0
+    mov string_buffer[2], 0
+    mov string_buffer[3], 0
+    ClearStringBufferLoop:
+        cmp si, 17
+        je ClearStringDone
+        mov string_buffer[si], '$'
+        inc si
+    ClearStringDone:    
+    ret
+ClearStringBuffer endp

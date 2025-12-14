@@ -1,10 +1,189 @@
 User struc
-    id dw ?
-    username db 16 dup(?)
-    principal dw 0
-    payment_progress db 0
-    total_payable dw 0
-    status db 10 dup (?)
+    id db ?
+    username db 16 dup('$') ; 15 chars
 User ends
+users User \
+    <0, "Jairus$">, \
+    <1, "Renz$">,   \
+    <2, "Alex$">,   \
+    <3, "Mika$">,   \
+    <4, "Noah$">,   \
+    <5, "Liam$">,   \
+    <6, "Ethan$">,  \
+    <7, "Lucas$">,  \
+    <8, "Aaron$">,  \
+    <9, "Chris$">
 
+user_count dw 10
+user_display_props db 0, 0, 0, 0
+; 0 - row
+; 1 - column
+; 2 - selected
+; 3 - back - selected
+login_logo db "                         _     _____ _____ _____ _   _", 0dh, 0ah,   \
+              "                        | |   |  _  |  __ \_   _| \ | |", 0dh, 0ah,   \
+              "                        | |   | | | | |  \/ | | |  \| |", 0dh, 0ah,   \
+              "                        | |   | | | | | __  | | | . ` |", 0dh, 0ah,   \
+              "                        | |___\ \_/ / |_\ \_| |_| |\  |", 0dh, 0ah,   \
+              "                        \_____/\___/ \____/\___/\_| \_/$"
+                       
+selected_user db 0                  
+Loan struc
+    id db ?
+    amount db 16 dup('$')
+Loan ends
+
+focus db 0 
+; 0 - list of loans
+; 1 - options
+
+selected_option dw 0
+; 0 - add
+; 1 - update
+; 2 - delete
+; 3 - back
+loan_display_props db 0, 0, 0
+; 0 - row
+; 1 - column
+; 2 - selected
+; 3 - back - selected
+loans1 Loan 10 dup(<>)
+loan_count1 dw 0
+
+loans2 Loan \
+    <0, "11000$">, \
+    <1, "26000$">, \
+    <2, "5200$">,  \
+    <3, "13000$">, \
+    <4, "8000$">,  \
+    <5, "31000$">, \
+    <6, "19000$">, \
+    <7, "9800$">,  \
+    <8, "43000$">, \
+    <9, "6500$">
+loan_count2 dw 10
+
+
+loans3 Loan \
+    <0, "9000$">,  \
+    <1, "24000$">, \
+    <2, "4800$">,  \
+    <3, "11500$">, \
+    <4, "7000$">,  \
+    <5, "28000$">, \
+    <6, "17500$">, \
+    <7, "9200$">,  \
+    <8, "40000$">, \
+    <9, "5800$">
+loan_count3 dw 10
+
+
+loans4 Loan \
+    <0, "15000$">, \
+    <1, "27000$">, \
+    <2, "6000$">,  \
+    <3, "14000$">, \
+    <4, "8200$">,  \
+    <5, "33000$">, \
+    <6, "20000$">, \
+    <7, "10000$">, \
+    2 dup(<>)
+loan_count4 dw 8
+
+
+
+loans5 Loan \
+    <0, "10500$">, \
+    <1, "25500$">, \
+    <2, "5100$">,  \
+    <3, "12500$">, \
+    <4, "7600$">,  \
+    <5, "30500$">, \
+    <6, "18500$">, \
+    <7, "9600$">,  \
+    <8, "42500$">, \
+    <9, "6200$">
+loan_count5 dw 10
+
+
+loans6 Loan \
+    <0, "9800$">,  \
+    <1, "23500$">, \
+    <2, "4700$">,  \
+    <3, "11000$">, \
+    <4, "6900$">,  \
+    <5, "27500$">, \
+    <6, "17000$">, \
+    <7, "9000$">,  \
+    <8, "39500$">, \
+    <9, "5600$">
+loan_count6 dw 10
+
+
+loans7 Loan \
+    <0, "16000$">, \
+    <1, "29000$">, \
+    <2, "6500$">,  \
+    <3, "14500$">, \
+    <4, "8800$">,  \
+    <5, "35000$">, \
+    <6, "21000$">, \
+    <7, "11000$">, \
+    <8, "47000$">, \
+    <9, "7500$">
+loan_count7 dw 10
+
+
+loans8 Loan \
+    <0, "10200$">, \
+    <1, "24800$">, \
+    <2, "4950$">,  \
+    <3, "11800$">, \
+    <4, "7200$">,  \
+    <5, "29500$">, \
+    <6, "17800$">, \
+    <7, "9400$">,  \
+    <8, "41000$">, \
+    <9, "5900$">
+loan_count8 dw 10
+
+
+loans9 Loan \
+    <0, "17000$">, \
+    <1, "31000$">, \
+    <2, "7000$">,  \
+    <3, "15000$">, \
+    <4, "9000$">,  \
+    <5, "37000$">, \
+    <6, "22500$">, \
+    <7, "12000$">, \
+    <8, "49000$">, \
+    <9, "8000$">
+loan_count9 dw 10
+
+
+loans10 Loan \
+    <0, "11500$">, \
+    <1, "26500$">, \
+    <2, "5400$">,  \
+    <3, "13200$">, \
+    <4, "8300$">,  \
+    <5, "32000$">, \
+    <6, "19500$">, \
+    <7, "10200$">, \
+    <8, "44000$">, \
+    <9, "6800$">
+loan_count10 dw 10
+
+; pointers to loan tables
+loan_tables dw OFFSET loans1, OFFSET loans2, OFFSET loans3, OFFSET loans4, \
+               OFFSET loans5, OFFSET loans6, OFFSET loans7, OFFSET loans8, \
+               OFFSET loans9, OFFSET loans10
+
+; pointers to loan counts
+loan_counts dw OFFSET loan_count1, OFFSET loan_count2, OFFSET loan_count3, OFFSET loan_count4, \
+               OFFSET loan_count5, OFFSET loan_count6, OFFSET loan_count7, OFFSET loan_count8, \
+               OFFSET loan_count9, OFFSET loan_count10
+current_loans_ptr  dw ?
+current_loan_count dw ?
 
