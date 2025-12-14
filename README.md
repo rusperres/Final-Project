@@ -1,4 +1,4 @@
 Mount in DosBox
 
-Run:
+To run the program, enter:
 `build`
