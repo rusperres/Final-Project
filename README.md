@@ -62,6 +62,16 @@ The interface is entirely keyboard-driven.
 
 ---
 
+## Demo Video
+
+A short demonstration of the program running in DOSBox is available on YouTube:
+
+* **Demo:** [https://youtu.be/tDFyyxZqnvo](https://youtu.be/tDFyyxZqnvo)
+
+This video showcases navigation, loan selection, and basic operations.
+
+---
+
 ## Author / Project Context
 
 This project was built as a low-level systems exercise focusing on:
