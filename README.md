@@ -65,7 +65,7 @@ The interface is entirely keyboard-driven.
 
 A short demonstration of the program running in DOSBox is available on YouTube:
 
-* **Demo:** [https://youtu.be/tDFyyxZqnvo](https://youtu.be/tDFyyxZqnvo)
+* **Demo:** [https://youtu.be/DQ9Sa6UsP_o]
 
 This video showcases navigation, loan selection, and basic operations.
 
