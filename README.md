@@ -32,7 +32,6 @@ A 16-bit DOS-based loan management program written in x86 assembly. The applicat
 
 * **Arrow Keys** – Navigate through loans and menu options
 * **Enter** – Select / confirm an option
-* **Back key** – Go back or cancel selection (depending on context)
 
 The interface is entirely keyboard-driven.
 
