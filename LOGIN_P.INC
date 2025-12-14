@@ -41,7 +41,6 @@ Login proc
     LoginEnterPressed:
         setcursor 0, 0
         call LoginOnClick
-        mov screen_number[0], 1
     LoginReturn:
     ret
 Login endp
@@ -114,7 +113,7 @@ LoginOnClick proc
     mov user_display_props[0], 32
     setcursor user_display_props[1], user_display_props[0]
     bg 7fh, 16
-    call DisplayUser
+    mov screen_number[0], 3
     ret
 LoginOnClick endp
 DisplayUsers proc

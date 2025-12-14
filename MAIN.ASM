@@ -7,11 +7,12 @@
     back db "BACK$"
     temp_login db "This is the login screen. Under construction :($"
    temp_register db "This is the register screen. Under construction :($"
-
+    
 .code
 include PROCS.INC
 include AUTH_P.INC
 include LOGIN_P.INC
+include HOME_P.INC
 Main:
     set_font 1112h
     
@@ -23,11 +24,16 @@ Main:
         je CallAuth
         cmp screen_number[0], 2
         je CallLogin
+        cmp screen_number[0], 3
+        je CallHome
         CallAuth:
             call Auth
             jmp MainLoop
         CallLogin:
             call Login
+            jmp MainLoop
+        CallHome:
+            call Home
             jmp MainLoop
 Done:
     setcursor 50, 79
